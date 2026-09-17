@@ -22,6 +22,7 @@ class Item:
     allergens: str | None
     protein: str
     spice: int
+    spice_confidence: float | None
     taste_tags: list[str]
     serves: list[int]
 
@@ -29,7 +30,7 @@ class Item:
 # "desc" is a SQL reserved word, hence the quoting.
 ITEMS_QUERY = """
     SELECT id, name, "desc", cuisine, course, diet, allergens,
-           protein, spice, taste_tags, serves
+           protein, spice, spice_confidence, taste_tags, serves
     FROM items
     ORDER BY name
 """
@@ -52,6 +53,7 @@ def fetch_items(database_url: str) -> list[Item]:
             allergens=row["allergens"],
             protein=str(row["protein"]),
             spice=row["spice"] or 0,
+            spice_confidence=row["spice_confidence"],
             taste_tags=list(row["taste_tags"] or []),
             serves=list(row["serves"] or []),
         )

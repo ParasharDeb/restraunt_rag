@@ -33,6 +33,7 @@ class Settings:
     database_url: str
     mistral_api_key: str
     mistral_model: str
+    mistral_chat_model: str
     pinecone_api_key: str
     pinecone_index: str
     pinecone_cloud: str
@@ -47,6 +48,7 @@ def load_settings() -> Settings:
         database_url=_require("DATABASE_URL"),
         mistral_api_key=_require("MISTRAL_API_KEY"),
         mistral_model=os.getenv("MISTRAL_EMBED_MODEL", "mistral-embed"),
+        mistral_chat_model=os.getenv("MISTRAL_CHAT_MODEL", "ministral-8b-latest"),
         pinecone_api_key=_require("PINECONE_API_KEY"),
         pinecone_index=os.getenv("PINECONE_INDEX", "milli-milli-menu"),
         pinecone_cloud=os.getenv("PINECONE_CLOUD", "aws"),

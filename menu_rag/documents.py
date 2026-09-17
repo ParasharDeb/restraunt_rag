@@ -41,6 +41,10 @@ SPICE_LABELS = {
 }
 
 
+# Below this, we say nothing about heat rather than guess.
+SPICE_MIN_CONFIDENCE = 0.5
+
+
 def _serves_phrase(serves: list[int]) -> str | None:
     if not serves:
         return None
@@ -65,7 +69,11 @@ def build_text(item: Item) -> str:
     if item.protein != "None":
         parts.append(f"Main protein: {item.protein.lower()}.")
 
-    parts.append(f"Spice level {item.spice} out of 5, {SPICE_LABELS.get(item.spice, 'medium spicy')}.")
+    # Only state heat when the enrichment was reasonably sure. The old classifier
+    # defaulted everything to 0, so every dish claimed "not spicy at all" -- an
+    # assertion that was simply false for a tikka masala and poisoned retrieval.
+    if item.spice_confidence is not None and item.spice_confidence >= SPICE_MIN_CONFIDENCE:
+        parts.append(f"Spice level {item.spice} out of 5, {SPICE_LABELS.get(item.spice, 'medium spicy')}.")
 
     if item.taste_tags:
         parts.append(f"Tastes {', '.join(tag.lower() for tag in item.taste_tags)}.")
@@ -91,6 +99,7 @@ def build_metadata(item: Item) -> dict:
         "diet": item.diet,
         "protein": item.protein,
         "spice": item.spice,
+        "spice_confidence": item.spice_confidence if item.spice_confidence is not None else 0.0,
         "taste_tags": [tag for tag in item.taste_tags if tag],
         "serves": [str(n) for n in item.serves],
     }
