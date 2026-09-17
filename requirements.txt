@@ -1,0 +1,10 @@
+# Embeddings + vector store
+langchain-core>=0.3.0
+langchain-mistralai>=0.2.0
+langchain-pinecone>=0.2.0
+pinecone>=5.0.0
+
+# Postgres access (the Prisma-managed Neon database)
+psycopg[binary]>=3.2.0
+
+python-dotenv>=1.0.0
